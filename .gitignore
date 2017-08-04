@@ -22,7 +22,8 @@
 .idea/*
 # 测试文件
 web/Test/*
-
+# 回收文件 -- 暂时不做处理，最终会删除的代码
+web/Recycle/*
 # 输出文件
 out/*
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml

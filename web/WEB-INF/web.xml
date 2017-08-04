@@ -36,7 +36,7 @@
 
     <servlet>
         <servlet-name>test</servlet-name>
-        <servlet-class>com.js.produce.TestServlet</servlet-class>
+        <servlet-class>com.js.produce.test.TestServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

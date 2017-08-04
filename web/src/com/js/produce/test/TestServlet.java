@@ -1,4 +1,4 @@
-package com.js.produce;
+package com.js.produce.test;
 
 import com.js.produce.core.CreateHorTableJsController;
 import com.js.produce.core.CreateVerTableJsController;
