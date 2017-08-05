@@ -271,8 +271,6 @@ public class CreateHorTableJsController extends CreateJsController {
         }
     }
 
-
-
     // 组装最终的js脚本
     private void setJsResult(){
         // 定位控件

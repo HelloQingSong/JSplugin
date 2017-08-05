@@ -112,11 +112,14 @@
 	</script>
 </head>
 
-<body style="background-image:url(../resources/images/background.jpg)">
+<body style="background-color: transparent" >
 
-<div class="row clearfix " >
-	<div class="row clearfix" style="margin: 3%"></div>
+<%--设置背景--%>
+<div style="position:absolute;z-index:-1;width:100%;height:100%;">
+	<img src="../resources/images/background.jpg" width="100%" height="100%" />
+</div>
 
+<div class="row clearfix" style="width: 100%;padding-top: 5%" >
 	<div class="col-lg-offset-2 col-lg-8" style="background-color:white ">
 			<%--标题--%>
 			<div class="col-lg-12">
@@ -124,7 +127,6 @@
 					<a class="navbar-brand" style="">JS脚本生成器</a>
 				</h1>
 			</div>
-
 
 			<div class="col-lg-12 form-group">
 				<%--导航栏--%>
@@ -483,12 +485,7 @@
 			</div>
 		</div>
 
-	<div class="row clearfix" style="margin: 5%"></div>
-
 </div>
-
-
-
 
 </body>
 </html>
