@@ -1,19 +1,16 @@
-package com.js.produce.test;
+package com.js.produce.servlets;
 
 import com.js.produce.core.CreateHorTableJsController;
-import com.js.produce.core.CreateVerTableJsController;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by 余青松 on 2017/8/4.
- * 实时核查 -- http://localhost:8081/test?jsId=1&functionsNeeded=on&upperBound=1&lowerBound=10&locateFunction=default&locateExternalControl=%20&locateInternalControl=&functionsNeeded=FocusTransfer&nextControl=default&activation=yes&maxLength=4
+ * Created by 余青松 on 2017/8/5.
  */
-public class TestServlet extends HttpServlet {
+public class CreateHorTableJsServlet  extends HttpServlet{
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response){
         try{

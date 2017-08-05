@@ -128,6 +128,7 @@
 				</h1>
 			</div>
 
+
 			<div class="col-lg-12 form-group">
 				<%--导航栏--%>
 				<ul class="nav nav-tabs">
@@ -137,7 +138,7 @@
 
 				<br>
 
-				<form method="get" action="/test">
+				<form method="get" action="/creatHorTableJs">
 					<%--输入jsId控件--%>
 					<div class="col-lg-12" style="padding: 0%">
 						<div class="col-lg-3" style="padding: 0%">

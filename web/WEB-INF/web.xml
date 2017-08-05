@@ -3,14 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
+    
 
     <servlet>
-        <servlet-name>test</servlet-name>
-        <servlet-class>com.js.produce.test.TestServlet</servlet-class>
+        <servlet-name>creatHorTableJs</servlet-name>
+        <servlet-class>com.js.produce.servlets.CreateHorTableJsServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>test</servlet-name>
-        <url-pattern>/test</url-pattern>
+        <servlet-name>creatHorTableJs</servlet-name>
+        <url-pattern>/creatHorTableJs</url-pattern>
     </servlet-mapping>
 </web-app>
