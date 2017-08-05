@@ -99,6 +99,17 @@
 
         });
 	</script>
+	
+	<script type="text/javascript" language="JavaScript">
+		<!--
+        function resetPage() {
+             if(window.confirm("确认重置？")){
+                 history.go(0);
+             }
+        }
+		//-->
+
+	</script>
 </head>
 
 <body style="background-image:url(../resources/images/background.jpg)">
@@ -464,13 +475,12 @@
 
 					<%--提交与重置按钮 --%>
 					<div class="col-lg-offset-3 col-lg-9" style="padding: 0% ">
-						<input type="submit" class="btn btn-primary" value="下一步"/>
-						<input type="submit" class="btn btn-default" value="重&nbsp;&nbsp;置"/>
+						<input type="submit" class="btn btn-primary" value="确&nbsp;&nbsp;认"/>
+						<input type="button" class="btn btn-default" value="重&nbsp;&nbsp;置" onClick="resetPage()"/>
 					</div>
 				</form>
 
 			</div>
-
 		</div>
 
 	<div class="row clearfix" style="margin: 5%"></div>

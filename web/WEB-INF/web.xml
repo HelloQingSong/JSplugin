@@ -5,36 +5,6 @@
          version="3.1">
 
     <servlet>
-        <servlet-name>changeStyleFunction</servlet-name>
-        <servlet-class>com.js.produce.core.ChangeStyleFunctionServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>changeStyleFunction</servlet-name>
-        <url-pattern>/changeStyleJS</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>toUpperCaseFunction</servlet-name>
-        <servlet-class>com.js.produce.core.toUpperCaseFunctionServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>toUpperCaseFunction</servlet-name>
-        <url-pattern>/toUpperCaseJS</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>radioRevokedFunction</servlet-name>
-        <servlet-class>com.js.produce.core.RadioRevokedFunctionServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>radioRevokedFunction</servlet-name>
-        <url-pattern>/radioRevokedJS</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>test</servlet-name>
         <servlet-class>com.js.produce.test.TestServlet</servlet-class>
     </servlet>
