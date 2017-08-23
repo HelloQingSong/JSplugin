@@ -32,6 +32,11 @@ public abstract class CreateJsController {
     */
     protected abstract String getJsResult(Map<String, String[]> userNeeds);
 
+    protected void clear(){
+        this.jsResult = "";
+        this.jsFunction = "";
+    }
+
 
 
 }

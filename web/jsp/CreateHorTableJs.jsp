@@ -99,28 +99,115 @@
 
         });
 	</script>
-	
+
+	<%--重置页面--%>
 	<script type="text/javascript" language="JavaScript">
 		<!--
         function resetPage() {
              if(window.confirm("确认重置？")){
-                 history.go(0);
+                 window.location.href="/index.jsp";
              }
         }
 		//-->
 
+	</script>
+
+	<%--脚本id 为必填项--%>
+	<script type="text/javascript">
+		jQuery(document).ready(function () {
+           jQuery("form").submit(function () {
+                var content = jQuery("#jsId").val();
+                var maxlength = jQuery("#maxLength").val();
+                var reg = new RegExp(" ","g");
+                var errors = 0;
+                if (content.replace(reg, "").length == 0) {
+                    jQuery("#errorForJsId").show();
+                    ++errors;
+                }else {
+                    jQuery("#errorForJsId").hide();
+                }
+                if(maxlength.replace(reg,"").length == 0 && jQuery("[value='FocusTransfer']").is(":checked")){
+                    jQuery("#errorForMaxLength").show()
+					++errors;
+                }else{
+                    jQuery("#errorForMaxLength").hide()
+
+                }
+                if(errors > 0) return false;
+                else return true;
+            });
+		})
+	</script>
+	<%--删除元素--%>
+	<script type="text/javascript">
+		function deleteInputStyle(id) {
+		    var _element = document.getElementById(id);
+            var _parentElement = _element.parentNode;
+            if(_parentElement){
+                _parentElement.removeChild(_element);
+            }
+        }
+	</script>
+	<%--控制textarea自动调整高度--%>
+	<script type="text/javascript">
+        jQuery.fn.extend({
+            autoHeight: function(){
+                return this.each(function(){
+                    var $this = jQuery(this);
+                    if( !$this.attr('_initAdjustHeight') ){
+                        $this.attr('_initAdjustHeight', $this.outerHeight());
+                    }
+                    _adjustH(this).on('input', function(){
+                        _adjustH(this);
+                    });
+                });
+                /**
+                 * 重置高度
+                 * @param {Object} elem
+                 */
+                function _adjustH(elem){
+                    var $obj = jQuery(elem);
+                    return $obj.css({height: $obj.attr('_initAdjustHeight'), 'overflow-y': 'hidden'})
+                        .height( elem.scrollHeight );
+                }
+            }
+        });
+        // 使用
+        jQuery(document).ready(function(){
+            jQuery(function () {
+                jQuery('#jsResultDisplay').collapse('show')
+            });
+            jQuery('textarea#jsResult').autoHeight();
+        });
+	</script>
+
+	<%--复制脚本内容--%>
+	<script type="text/javascript">
+        function copyJsResult()
+        {
+            var jsResult=document.getElementById("jsResult");
+            var content = jQuery("#jsResult").val();
+            var reg = new RegExp(" ","g");
+            content.replace(reg , "");
+            if(content.length != 0) {
+                jsResult.select(); // 选择对象
+                document.execCommand("Copy"); // 执行浏览器复制命令
+
+                alert("复制成功");
+            }
+        }
 	</script>
 </head>
 
 <body style="background-color: transparent" >
 
 <%--设置背景--%>
-<div style="position:absolute;z-index:-1;width:100%;height:100%;">
+<div style="position:fixed;z-index:-1;width:100%;height:100%;">
 	<img src="../resources/images/background.jpg" width="100%" height="100%" />
 </div>
 
 <div class="row clearfix" style="width: 100%;padding-top: 5%" >
-	<div class="col-lg-offset-2 col-lg-8" style="background-color:white ">
+	<div class="col-lg-offset-1 col-lg-10" style="background-color:white ">
 			<%--标题--%>
 			<div class="col-lg-12">
 				<h1>
@@ -133,7 +220,7 @@
 				<%--导航栏--%>
 				<ul class="nav nav-tabs">
 					<li class="active"><a class="navbar-header">横向表格</a></li>
-					<li><a href="./CreateVerTableJs.jsp">纵向表格</a></li>
+					<li><a href="/jsp/CreateVerTableJs.jsp">纵向表格</a></li>
 				</ul>
 
 				<br>
@@ -144,8 +231,11 @@
 						<div class="col-lg-3" style="padding: 0%">
 							<input id="jsId" name="jsId" type="text" class="form-control"  placeholder="请输入脚本 Id"/>
 						</div>
-						<div class="col-lg-2">
+						<div class="col-lg-1" style="padding-right: 0%">
 							<h4 style="color: red"> * </h4>
+						</div>
+						<div class="col-lg-2"style="padding: 0%">
+							<h5 id="errorForJsId" style="color: red;display: none"> 脚本Id不能为空 </h5>
 						</div>
 					</div>
 
@@ -169,11 +259,18 @@
 									<%--取值范围预览--%>
 									<div class="col-lg-12" id="displayRealTimeVer">
 										<span class="text-muted">取值范围 : </span>
-										<span class="text-muted">(</span>
+										<select class="btn-xs" name="LeftInterval" style="-moz-appearance: none; -webkit-appearance:none; appearance:none; font-size: medium ">
+											<option value="open" >(</option>
+											<option value="close"> [</option>
+										</select>
 										<span class="text-primary" id="displayLower">-∞</span>
 										<span class="text-muted">,</span>
 										<span class="text-primary" id="displayUpper">+∞</span>
-										<span class="text-muted">)</span>
+										<select class="btn-xs" name="RightInterval" style="-moz-appearance: none; -webkit-appearance:none; appearance:none;font-size: medium">
+											<option value="open">)</option>
+											<option value="close">]</option>
+										</select>
+
 										<span class="text-danger" id="reminderRealTimeVer">取值范围异常</span>
 										<script type="text/javascript">
                                             jQuery(document).ready(function () {
@@ -183,7 +280,9 @@
                                                 jQuery("#lowerBound").keyup(function () {
                                                     var lower = jQuery("#lowerBound").val();
                                                     var upper =  jQuery("#upperBound").val();
-
+                                                    var reg = new RegExp(" ","g");
+                                                    lower = lower.replace(reg,"");
+                                                    upper = upper.replace(reg,"");
                                                     // 设置文本内容
                                                     if(lower == ""){
                                                         jQuery("#displayLower").text("-∞");
@@ -194,22 +293,43 @@
 
                                                     // 检测取值范围
                                                     if(lower!= "" && upper!= ""){
-                                                        lower = parseFloat(lower);
-                                                        upper = parseFloat(upper);
-                                                        if(lower > upper){
-                                                            jQuery("#reminderRealTimeVer").show();
-                                                        }else {
+                                                        _lower = parseFloat(lower);
+                                                        _upper = parseFloat(upper);
+                                                        if(jQuery.isNumeric(lower)&&jQuery.isNumeric(upper)&&_lower <= _upper){
                                                             jQuery("#reminderRealTimeVer").hide();
+                                                        }else {
+                                                            jQuery("#reminderRealTimeVer").show();
                                                         }
+                                                    }else{
+                                                        if(lower != "" && upper == "") {
+                                                            if (jQuery.isNumeric(lower)) {
+                                                                jQuery("#reminderRealTimeVer").hide();
+                                                            } else {
+                                                                jQuery("#reminderRealTimeVer").show();
+                                                            }
+                                                        }
+
+                                                        if(lower == "" && upper != "") {
+                                                            if (jQuery.isNumeric(upper)) {
+                                                                jQuery("#reminderRealTimeVer").hide();
+                                                            } else {
+                                                                jQuery("#reminderRealTimeVer").show();
+                                                            }
+                                                        }
+
+
+
                                                     }
                                                 });
 
                                                 jQuery("#upperBound").keyup(function () {
                                                     var lower = jQuery("#lowerBound").val();
                                                     var upper =  jQuery("#upperBound").val();
-
+                                                    var reg = new RegExp(" ","g");
+                                                    lower = lower.replace(reg,"");
+                                                    upper = upper.replace(reg,"");
                                                     // 设置文本内容
-                                                    if(upper == ""){
+                                                    if(upper == "" ){
                                                         jQuery("#displayUpper").text("+∞");
                                                         jQuery("#reminderRealTimeVer").hide();
                                                     }else{
@@ -218,17 +338,32 @@
 
                                                     // 检测取值范围
                                                     if(lower!= "" && upper!= ""){
-                                                        lower = parseFloat(lower);
-                                                        upper = parseFloat(upper);
-                                                        if(lower > upper){
-                                                            jQuery("#reminderRealTimeVer").show();
-                                                        }else {
+                                                        _lower = parseFloat(lower);
+                                                        _upper = parseFloat(upper);
+                                                        if(jQuery.isNumeric(lower)&&jQuery.isNumeric(upper)&&_lower <= _upper){
                                                             jQuery("#reminderRealTimeVer").hide();
+                                                        }else {
+                                                            jQuery("#reminderRealTimeVer").show();
+                                                        }
+                                                    }else{
+
+                                                        if(lower != "" && upper == "") {
+                                                            if (jQuery.isNumeric(lower)) {
+                                                                jQuery("#reminderRealTimeVer").hide();
+                                                            } else {
+                                                                jQuery("#reminderRealTimeVer").show();
+                                                            }
+                                                        }
+
+                                                        if(lower == "" && upper != "") {
+                                                            if (jQuery.isNumeric(upper)) {
+                                                                jQuery("#reminderRealTimeVer").hide();
+                                                            } else {
+                                                                jQuery("#reminderRealTimeVer").show();
+                                                            }
                                                         }
                                                     }
                                                 });
-
-
                                             });
 										</script>
 									</div>
@@ -264,6 +399,9 @@
 										<div class="col-lg-4" style="padding: 0%">
 											<input type="text" name="maxLength" id="maxLength" class="form-control" placeholder="请设置最大输入字符个数"/>
 										</div>
+										<div class="col-lg-3"style="padding: 0%">
+											<h5 id="errorForMaxLength" style="color: red;display: none">&nbsp最大输入字符个数不能为空 </h5>
+										</div>
 									</div>
 									<%--设置是否激活光标跳转--%>
 									<div class="col-lg-12">
@@ -297,7 +435,7 @@
 
 										<div class="col-lg-12" style="padding: 0%;display: none" id="nextControlCustomize">
 											<div class="col-lg-8" style="padding: 0%">
-												<span type="text" class="text-success">示例: jQuery(location).parents('tr').eq(1).next('tr').find('input') </span>
+												<span type="text" class="text-success">示例: var nextControl = jQuery(location).parents('tr').eq(1).next('tr').find('input'); </span>
 											</div>
 											<div class="col-lg-8" style="padding: 0%">
 												<textarea class="text-muted form-control" name="nextControl" rows="2"></textarea>
@@ -360,19 +498,23 @@
 									<div class="col-lg-12" >
 										<div class="col-lg-offset-3" style="padding: 0%" >
 											<input  type="button" value="增加" class="btn btn-primary" id="addNewStyle" />
+											<input type="hidden" value="1" id="deleteButtonId"/>
 										</div>
 
 										<%--动态添加样式输入框--%>
 										<script type="text/javascript">
                                             jQuery(document).ready(function () {
                                                 jQuery("#addNewStyle").click(function () {
+                                                    var id = jQuery("#deleteButtonId").val();
                                                     var newStyle = jQuery("#styleNeedModel").html();
-                                                    newStyle =  "<br><br><div class=\"col-lg-12\" style=\"padding: 0%;\">"+
+                                                    newStyle =  "<div class=\"col-lg-12\" style=\"padding: 0%;\" id='inputStyle"+id+"'>"+
                                                         "<div class=\"col-lg-3\" style=\"padding: 0%;\"></div>" +
-                                                        newStyle +
+                                                        newStyle + "<button type='button' class='btn btn-default'onclick=\"deleteInputStyle('inputStyle"+id+"')\">删除</button> "
                                                         "</div>";
+
                                                     var before = jQuery("#styleNeedModel").parent();
                                                     jQuery(before).append(newStyle);
+                                                    jQuery("#deleteButtonId").val(++id);
                                                 });
                                             });
 										</script>
@@ -478,13 +620,54 @@
 
 					<%--提交与重置按钮 --%>
 					<div class="col-lg-offset-3 col-lg-9" style="padding: 0% ">
-						<input type="submit" class="btn btn-primary" value="确&nbsp;&nbsp;认"/>
+						<input type="submit" class="btn btn-primary" value="确&nbsp;&nbsp;认" />
 						<input type="button" class="btn btn-default" value="重&nbsp;&nbsp;置" onClick="resetPage()"/>
 					</div>
 				</form>
 
 			</div>
 		</div>
+
+</div>
+
+<%-- 显示 js脚本--%>
+<div class="row clearfix" style="width: 100%;padding-top: 2%">
+	<div class="col-lg-offset-1 col-lg-10" style="background-color:white ">
+		<%--js脚本结果和复制按钮--%>
+		<div class="col-lg-12">
+			<div class="col-lg-offset-3 col-lg-6" style="padding: 1%;">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h2 class="panel-title" style="text-align: center">
+							<a data-toggle="collapse" data-parent="#accordion"
+							   href="#jsResultDisplay">
+								js脚本结果
+							</a>
+						</h2>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-1 " style="padding: 1.3%;text-align: left">
+				<button type="button" class="btn" style="outline: none;" id="copyJsResult" onclick="copyJsResult()">
+					<span>复&nbsp&nbsp制</span>
+				</button>
+			</div>
+		</div>
+		<%--js脚本内容--%>
+		<div id="jsResultDisplay" class="panel-collapse ">
+				<div class="panel-body">
+					<%
+						String jsReslut = (String)request.getAttribute("jsResult");
+						if(jsReslut == null){
+						    jsReslut = "";
+						}else {
+						    request.removeAttribute("jsReslut");
+						}
+					%>
+					<textarea id="jsResult" class="form-control" id="tValue" readonly="readonly" style="overflow-y:hidden; height:20px;color: #1b6d85" ><%= jsReslut%></textarea>
+				</div>
+			</div>
+	</div>
 
 </div>
 

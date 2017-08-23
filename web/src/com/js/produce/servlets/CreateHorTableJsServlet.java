@@ -14,11 +14,13 @@ public class CreateHorTableJsServlet  extends HttpServlet{
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response){
         try{
+
+            request.removeAttribute("jsResult");
             Map<String,String[]> userNeeds = request.getParameterMap();
             CreateHorTableJsController createVerTableJsController = new CreateHorTableJsController();
 
-            System.out.println(createVerTableJsController.getJsResult(userNeeds));
-
+            request.setAttribute("jsResult",createVerTableJsController.getJsResult(userNeeds));
+            request.getRequestDispatcher("/jsp/CreateHorTableJs.jsp").forward(request,response);
         }catch (Exception e){
             e.printStackTrace();
         }

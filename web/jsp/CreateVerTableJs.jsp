@@ -25,7 +25,7 @@
 
 		<div class="col-lg-12">
 			<ul class="nav nav-tabs">
-				<li ><a href="./CreateHorTableJs.jsp">横向表格</a></li>
+				<li ><a href="/jsp/CreateHorTableJs.jsp">横向表格</a></li>
 				<li class="active"><a>纵向表格</a></li>
 			</ul>
 

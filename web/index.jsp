@@ -12,7 +12,7 @@
 </head>
 <body>
 <%
-	request.getRequestDispatcher("./jsp/CreateHorTableJs.jsp").forward(request,response);
+	request.getRequestDispatcher("/jsp/CreateHorTableJs.jsp").forward(request,response);
 %>
 </body>
 </html>

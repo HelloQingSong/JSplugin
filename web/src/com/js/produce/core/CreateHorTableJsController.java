@@ -1,5 +1,7 @@
 package com.js.produce.core;
 
+import com.sun.deploy.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +41,8 @@ import java.util.ResourceBundle;
  *
  */
 public class CreateHorTableJsController extends CreateJsController {
+    // 注释
+    private String jsAnnotations = "";
     // 定位控件
     private String locateControl = "";
     // 脚本id
@@ -141,6 +145,8 @@ public class CreateHorTableJsController extends CreateJsController {
             for(int i=0 ; i<functionNeeds.length ; ++i){
                 switch (functionNeeds[i]){
                     case "RealTimeVer":
+                        // 注释
+                        jsAnnotations += "<!--实时核查-数值范围检测-->\n";
                         // 正无穷Number.POSITIVE_INFINITY
                         // 负无穷Number.NEGATIVE_INFINITY
                         // 最大值Number.MAX_VALUE
@@ -161,7 +167,6 @@ public class CreateHorTableJsController extends CreateJsController {
                         // id 组成 -- controlBaseID + jsId + i
                         String id = baseId +jsId+i;
                         String control = jsResultResourceBundle.getString(type).replaceAll("#" + baseId ,id);
-
 
                         String content = "请输入一个";
                         int temp = 0;
@@ -191,11 +196,23 @@ public class CreateHorTableJsController extends CreateJsController {
                         addControlsId.add(id);
                         // 添加控件
                         addControls.add(control);
+                        // 左区间
+                        String leftInterval = userNeeds.get("LeftInterval")[0];
+                        String left = " < ";
+                        if(leftInterval.equals("close")){
+                            left = " <= ";
+                        }
+                        // 右区间
+                        String rightInterval = userNeeds.get("RightInterval")[0];
+                        String right = " < ";
+                        if(rightInterval.equals("close")){
+                            right = " <= ";
+                        }
 
                         jsFunction += "\t\t" + "jQuery(targetItem).keyup(function(){\n";
                         jsFunction += "\t\t\t" + "var number = jQuery(targetItem).val(); \n";
                         jsFunction += "\t\t\t" + "number = Math.round(number); \n";
-                        jsFunction += "\t\t\t" + "if("+lower+"<number & number <"+upper+"){\n";
+                        jsFunction += "\t\t\t" + "if("+lower+left+"number & number "+right+upper+"){\n";
                         jsFunction += "\t\t\t\t" + "jQuery('#"+id+"').hide();\n";
                         jsFunction += "\t\t\t" + "}else{\n";
                         jsFunction += "\t\t\t\t" + "jQuery('#"+id+"').show();\n";
@@ -204,26 +221,40 @@ public class CreateHorTableJsController extends CreateJsController {
                         break;
 
                     case "FocusTransfer":
+                        // 注释
+                        jsAnnotations += "<!--光标跳转-->\n";
                         String nextControl = userNeeds.get("nextControlWay")[0];
                         if(nextControl.equals("default")){
-                            nextControl = "jQuery(location).parents('tr').eq(1).next('tr').find('input')";
+                            nextControl = "\t\t\t\tvar allInputs = jQuery.find(\"input\");\n"
+                                        + "\t\t\t\tvar target_ordinal = 0;\n"
+                                        + "\t\t\t\tfor(var i = 0; i<allInputs.length; ++i){\n"
+                                        + "\t\t\t\t\tif(allInputs[i].id ==this.id){\n"
+                                        + "\t\t\t\t\t\ttarget_ordinal = i;\n"
+                                        + "\t\t\t\t\t\tbreak;\n"
+                                        + "\t\t\t\t\t}\n"
+                                        + "\t\t\t\t}\n"
+                                        + "\t\t\t\tvar nextControl = allInputs[target_ordinal+1];\n";
                         }else if(nextControl.equals("customize")){
                             nextControl = userNeeds.get("nextControl")[0];
                         }
                         // 设置最大输入字符个数
                         jsFunction += "\t\t" + "jQuery(targetItem).attr('maxlength',"+userNeeds.get("maxLength")[0] +");\n";
+                        // 设置目标控件id
+                        jsFunction += "\t\t" + "jQuery(targetItem).attr('id',"+"'input_"+locateControlID+"');\n";
                         // 是否激活光标转移
                         if(userNeeds.get("activation")[0].equals("yes")) {
-                            // 定位下一个控件
-                            jsFunction += "\t\t" + "var nextControl = "+nextControl+ ";\n";
                             jsFunction += "\t\t" + "jQuery(targetItem).keyup(function(){\n";
                             jsFunction += "\t\t\t" + "if(jQuery(targetItem).val().length == " + userNeeds.get("maxLength")[0] + "){\n";
+                            // 定位下一个控件
+                            jsFunction +=  nextControl;
                             jsFunction += "\t\t\t\t" + "nextControl.focus();\n";
                             jsFunction += "\t\t\t" + "}\n";
                             jsFunction += "\t\t" + "});\n";
                         }
                         break;
                     case "RadioRevoked":
+                        // 注释
+                        jsAnnotations += "<!--radio撤销-->\n";
                         jsFunction = "";
                         // 添加扩展控件
                         type = "img";
@@ -246,24 +277,37 @@ public class CreateHorTableJsController extends CreateJsController {
                         jsFunction += "\t\t});\n";
                         return;
                     case "ChangeStyle":
-                            String[] styleNames = userNeeds.get("stylesNeedName");
-                            String[] styleValues = userNeeds.get("stylesNeedValue");
-                            ArrayList<String> styles = new ArrayList<String>();
-                            for( int p = 0; p<styleNames.length; ++p){
-                                styles.add("'"+styleNames[p]+"':'"+styleValues[p]+"'");
-                            }
-                            // 设置样式
-                            jsFunction+="\t\tjQuery(targetItem).css({";
-                            jsFunction += styles.get(0);
-                            for( int j=1 ; j<styles.size(); ++j) {
-                                jsFunction += ","+styles.get(j);
-                            }
-                            jsFunction+="});\n";
+                        // 注释
+                        jsAnnotations += "<!--设置文本框样式-->\n";
+                        String[] styleNames = userNeeds.get("stylesNeedName");
+                        String[] styleValues = userNeeds.get("stylesNeedValue");
+                        ArrayList<String> styles = new ArrayList<String>();
+                        for( int p = 0; p<styleNames.length; ++p){
+                            styles.add("'"+styleNames[p]+"':'"+styleValues[p]+"'");
+                        }
+                        // 设置样式
+                        jsFunction+="\t\tjQuery(targetItem).css({";
+                        jsFunction += styles.get(0);
+                        for( int j=1 ; j<styles.size(); ++j) {
+                            jsFunction += ","+styles.get(j);
+                        }
+                        jsFunction+="});\n";
 
                         break;
                     case "ToUpperCase":
+                        // 注释
+                        jsAnnotations += "<!--大小写转换-->\n";
                         jsFunction += "\n\t\tjQuery(targetItem).keyup(function(){ \n";
-                        jsFunction += "\t\t\tjQuery(targetItem).val(jQuery(targetItem).val().toUpperCase());\n";
+                        String[] choose = userNeeds.get("toUpper");
+                        if(choose.length == 1) {
+                            if(choose[0].equals("true")){
+                                // 小写转大写
+                                jsFunction += "\t\t\tjQuery(targetItem).val(jQuery(targetItem).val().toUpperCase());\n";
+                            }else if(choose[0].equals("false")){
+                                // 大写转小写
+                                jsFunction += "\t\t\tjQuery(targetItem).val(jQuery(targetItem).val().toLowerCase());\n";
+                            }
+                        }
                         jsFunction += "\t\t});\n";
                         break;
                 }
@@ -273,6 +317,8 @@ public class CreateHorTableJsController extends CreateJsController {
 
     // 组装最终的js脚本
     private void setJsResult(){
+        // 注释
+        jsResult += jsAnnotations + "\n";
         // 定位控件
         jsResult += locateControl + "\n";
         // 扩展控件
@@ -309,7 +355,8 @@ public class CreateHorTableJsController extends CreateJsController {
     // 生成最终js脚本
     @Override
     public String getJsResult(Map<String,String[]> userNeeds){
-        System.out.println("hello");
+
+        this.clear();
         try{
             // 设置定位控件 --> locateControl
             this.setLocateControl(userNeeds.get("jsId")[0]);
@@ -328,6 +375,25 @@ public class CreateHorTableJsController extends CreateJsController {
         }
 
         return jsResult;
+    }
+
+    @Override
+    protected void clear(){
+        super.clear();
+        // 外部控件定位
+        locateExternalControl ="";
+        // 内部控件定位
+        locateInternalControl = "";
+        // 定位控件
+        locateControl = "";
+        // 脚本id
+        jsId = "";
+        //  定位控件id
+        locateControlID = "";
+        addControlsId.clear();
+        addControls.clear();
+        // 注释
+        jsAnnotations = "";
     }
 
 }
