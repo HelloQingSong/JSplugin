@@ -160,6 +160,20 @@ public class CreateHorTableJsController extends CreateJsController {
                         if(lower.equals("")){
                             lower = "Number.NEGATIVE_INFINITY";
                         }
+
+                        // 左区间
+                        String leftInterval = userNeeds.get("LeftInterval")[0];
+                        String left = " < ";
+                        if(leftInterval.equals("close")){
+                            left = " <= ";
+                        }
+                        // 右区间
+                        String rightInterval = userNeeds.get("RightInterval")[0];
+                        String right = " < ";
+                        if(rightInterval.equals("close")){
+                            right = " <= ";
+                        }
+
                         // 添加扩展控件
                         String type = "span";
                         // controlBaseID
@@ -172,14 +186,23 @@ public class CreateHorTableJsController extends CreateJsController {
                         int temp = 0;
                         // 设置内容
                         if(!lower.equals("Number.NEGATIVE_INFINITY")){
-                            content += "大于"+ lower;
+                            content += "大于";
+                            if(leftInterval.equals("close")){
+                                content += "等于";
+                            }
+                            content += lower;
                             ++temp;
                         }
+
                         if(!lower.equals("Number.NEGATIVE_INFINITY") && !upper.equals("Number.POSITIVE_INFINITY")){
                             content += "且";
                         }
                         if(!upper.equals("Number.POSITIVE_INFINITY")){
-                            content += "小于" + upper;
+                            content += "小于";
+                            if(rightInterval.equals("close")){
+                                content += "等于";
+                            }
+                            content += upper;
                             ++temp;
                         }
                         if(temp>0){
@@ -196,18 +219,7 @@ public class CreateHorTableJsController extends CreateJsController {
                         addControlsId.add(id);
                         // 添加控件
                         addControls.add(control);
-                        // 左区间
-                        String leftInterval = userNeeds.get("LeftInterval")[0];
-                        String left = " < ";
-                        if(leftInterval.equals("close")){
-                            left = " <= ";
-                        }
-                        // 右区间
-                        String rightInterval = userNeeds.get("RightInterval")[0];
-                        String right = " < ";
-                        if(rightInterval.equals("close")){
-                            right = " <= ";
-                        }
+
 
                         jsFunction += "\t\t" + "jQuery(targetItem).keyup(function(){\n";
                         jsFunction += "\t\t\t" + "var number = jQuery(targetItem).val(); \n";
