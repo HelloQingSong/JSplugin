@@ -230,17 +230,39 @@ public class CreateVerTableJsController extends CreateJsController {
                             content += "数" ; // 当区间为  ( -∞ , +∞ )时，请输入任意一个数
                         }
 
+                        // 添加扩展控件
+                        type = "span";
+                        // controlBaseID
+                        baseId = jsResultResourceBundle.getString(type+"BaseID");
+                        // id 组成 -- controlBaseID + jsId + i
+                        id = baseId +jsId+i;
+                        control = jsResultResourceBundle.getString(type).replaceAll("#" + baseId ,id);
+                        control = control.replaceAll("=content=",content);
                         jsFunction += "\t\t\t" + "jQuery(targetItems).each(function(){\n";
                         jsFunction += "\t\t\t\t" + "jQuery(this).attr('title','"+content+"'); \n\n";
+
+                        jsFunction += "\t\t\t\t"+"if (jQuery(this).parents('td').eq(0).find('#"+id+"').length == 0){ \n";
+                        jsFunction += "\t\t\t\t\t" + "jQuery(this).parents('td').eq(0).find('input').last().after(\"<br>"+control+"\");\n";
+                        jsFunction += "\t\t\t\t" + "}\n";
+
                         jsFunction += "\t\t\t\t" + "jQuery(this).keyup(function(){\n";
                         jsFunction += "\t\t\t\t\t" + "var number = jQuery(this).val(); \n";
                         jsFunction += "\t\t\t\t\t" + "number = Math.pow(number,1); \n";
                         jsFunction += "\t\t\t\t\t" + "if("+lower+left+"number & number "+right+upper+"){\n";
-                        jsFunction += "\t\t\t\t\t\t" + "jQuery(this).css({'color':'black','background-color':'white'});\n";
+//                        jsFunction += "\t\t\t\t\t\t" + "jQuery(this).css({'color':'black','background-color':'#FFFF99'});\n";
+                        jsFunction += "\t\t\t\t\t\t" + "jQuery(this).parents('td').eq(0).find('#"+id+"').hide();";
                         jsFunction += "\t\t\t\t\t" + "}else{\n";
-                        jsFunction += "\t\t\t\t\t\t" + "jQuery(this).css({'color':'white','background-color':'red'});\n";
+                        jsFunction += "\t\t\t\t\t\t" + "jQuery(this).parents('td').eq(0).find('#"+id+"').show();\n";
                         jsFunction += "\t\t\t\t\t" + "}\n";
                         jsFunction += "\t\t\t\t" + "});\n";
+
+                        jsFunction += "\t\t\t\t" + "jQuery(this).mouseout(function () {\n";
+                        jsFunction += "\t\t\t\t\t" + "titleMouseOut(this);\n";
+                        jsFunction += "\t\t\t\t" + "});\n";
+                        jsFunction += "\t\t\t\t" + "jQuery(this).mouseover(function () {\n";
+                        jsFunction += "\t\t\t\t\t" + "titleMouseOver(this,event,15);\n";
+                        jsFunction += "\t\t\t\t" + "});\n";
+
                         jsFunction += "\t\t\t" + "});\n";
                         jsFunction += "\t\t}\n";
                         break;
@@ -308,10 +330,10 @@ public class CreateVerTableJsController extends CreateJsController {
                         id = baseId +jsId+i;
                         control = jsResultResourceBundle.getString(type).replaceAll("#" + baseId ,id);
 
-//                        // 添加控件ID
-//                        addControlsId.add(id);
-//                        // 添加控件
-//                        addControls.add(control);
+//                       // 添加控件ID
+//                       addControlsId.add(id);
+//                       // 添加控件
+//                       addControls.add(control);
 
                         jsFunction += "\t\t\t" + "jQuery(targetItems).each(function(){\n";
                         // 设置最大输入字符个数
