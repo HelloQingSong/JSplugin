@@ -152,12 +152,14 @@ public class CreateHorTableJsController extends CreateJsController {
                         // 最大值Number.MAX_VALUE
                         // 上界
                         String upper = userNeeds.get("upperBound")[0];
-                        if(upper.equals("")) {
+                        upper = upper.replaceAll(" ","");
+                        if(upper.isEmpty()) {
                             upper = "Number.POSITIVE_INFINITY";
                         }
                         // 下界
                         String lower = userNeeds.get("lowerBound")[0];
-                        if(lower.equals("")){
+                        lower = lower.replaceAll(" ","");
+                        if(lower.isEmpty()){
                             lower = "Number.NEGATIVE_INFINITY";
                         }
 
@@ -210,9 +212,6 @@ public class CreateHorTableJsController extends CreateJsController {
                         }else{
                             content += "数" ; // 当区间为  ( -∞ , +∞ )时，请输入任意一个数
                         }
-
-
-
                         control = control.replaceAll("=content=",content);
 
                         // 添加控件ID
@@ -223,7 +222,7 @@ public class CreateHorTableJsController extends CreateJsController {
 
                         jsFunction += "\t\t" + "jQuery(targetItem).keyup(function(){\n";
                         jsFunction += "\t\t\t" + "var number = jQuery(targetItem).val(); \n";
-                        jsFunction += "\t\t\t" + "number = Math.round(number); \n";
+                        jsFunction += "\t\t\t" + "number = Math.pow(number,1); \n";
                         jsFunction += "\t\t\t" + "if("+lower+left+"number & number "+right+upper+"){\n";
                         jsFunction += "\t\t\t\t" + "jQuery('#"+id+"').hide();\n";
                         jsFunction += "\t\t\t" + "}else{\n";
@@ -252,7 +251,9 @@ public class CreateHorTableJsController extends CreateJsController {
                         // 设置最大输入字符个数
                         jsFunction += "\t\t" + "jQuery(targetItem).attr('maxlength',"+userNeeds.get("maxLength")[0] +");\n";
                         // 设置目标控件id
-                        jsFunction += "\t\t" + "jQuery(targetItem).attr('id',"+"'input_"+locateControlID+"');\n";
+                        jsFunction += "\t\tif(jQuery(targetItem).attr('id') == undefined){\n";
+                        jsFunction += "\t\t\t" + "jQuery(targetItem).attr('id',"+"'input_"+locateControlID+"');\n";
+                        jsFunction += "\t\t}\n";
                         // 是否激活光标转移
                         if(userNeeds.get("activation")[0].equals("yes")) {
                             jsFunction += "\t\t" + "jQuery(targetItem).keyup(function(){\n";

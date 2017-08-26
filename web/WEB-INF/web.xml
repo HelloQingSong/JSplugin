@@ -10,8 +10,18 @@
         <servlet-class>com.js.produce.servlets.CreateHorTableJsServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>creatVerTableJs</servlet-name>
+        <servlet-class>com.js.produce.servlets.CreateVerTableJsServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>creatHorTableJs</servlet-name>
         <url-pattern>/creatHorTableJs</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>creatVerTableJs</servlet-name>
+        <url-pattern>/creatVerTableJs</url-pattern>
     </servlet-mapping>
 </web-app>
